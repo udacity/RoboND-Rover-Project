@@ -22,7 +22,7 @@ I've saved some test data for you in the folders called `larger_test_dataset` an
 If you would like to record data on your own, you should first create a new folder to store the image data in.  Then launch the simulator and choose "Training Mode" then hit "r".  Navigate to the directory you want to store data in, select it, and then drive around collecting data.  Hit "r" again to stop data collection.
 
 ## Data Analysis
-In the IPython notebook called `RoverSandbox.ipynb` I've written a number of functions for performing the various steps of this project.  The notebook should function as is without need for modification at this point.  To see what's in the notebook and execute the code there, start the jupyter notebook server at the command line like this:
+Included in the IPython notebook called `Rover Project Test Notebook.ipynb` are the functions from the lesson for performing the various steps of this project.  The notebook should function as is without need for modification at this point.  To see what's in the notebook and execute the code there, start the jupyter notebook server at the command line like this:
 
 ```sh
 jupyter notebook
