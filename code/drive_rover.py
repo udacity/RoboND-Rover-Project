@@ -39,9 +39,17 @@ class RoverState():
         self.steer = None # Current steering angle
         self.throttle = None # Current throttle value
         self.brake = None # Current brake value
+        self.nav_angles = None # Measured angles of navigable terrain pixels
+        self.nav_dists = None # Measured distances of navigable terrain pixels
+        self.vision_image = np.zeros((160, 320, 3), dtype=np.float) # Image output from perception step
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) # Worldmap
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode 
+        self.throttle_set = 0.2 # Throttle setting when accelerating
+        self.brake_set = 10 # Brake setting when braking
+        self.stop_forward = 100 # Threshold to initiate a stopping action
+        self.go_forward = 1000 # Threshold to go forward again
+        self.max_vel = 2 # Maximum velocity (meters/second)
 
 # Initialize our rover 
 Rover = RoverState()
@@ -78,19 +86,30 @@ def telemetry(sid, data):
 
         if np.isfinite(Rover.vel):
             
-            pil_img = Image.fromarray(map_add.astype(np.uint8))
+            Rover = perception_step(Rover)
+            Rover = decision_step(Rover)
+
+            plotmap = np.rot90(Rover.worldmap.clip(0, 255))
+            map_add = cv2.addWeighted(plotmap, 1, Rover.ground_truth, 0.4, 0)
+            print('Add map max:', map_add.max())
+            pil_img = Image.fromarray(map_add.clip(0, 255).astype(np.uint8))
             buff = BytesIO()
             pil_img.save(buff, format="JPEG")
-            encoded_string1 = base64.b64encode(buff.getvalue()).decode("utf-8")
+            outImageString1 = base64.b64encode(buff.getvalue()).decode("utf-8")
             
-            # Send commands to the rover!
+            pil_img = Image.fromarray(Rover.vision_image.astype(np.uint8))
+            buff = BytesIO()
+            pil_img.save(buff, format="JPEG")
+            outImageString2 = base64.b64encode(buff.getvalue()).decode("utf-8")
+            
+            # The actuation step!  Send commands to the rover!
             # commands = (throttle, brake, steering)
-            commands = (0, 0, 0)
-            send_control(commands, encoded_string1, '')
+            commands = (Rover.throttle, Rover.brake, Rover.steer)
+            send_control(commands, outImageString1, outImageString2)
 
         else:
 
-            # Send zeros for throttle, brake and steer 
+            # Send zeros for throttle, brake and steer and empty images
             # if we got a bad velocity value in telemetry
             send_control((0, 0, 0), '', '')
         
