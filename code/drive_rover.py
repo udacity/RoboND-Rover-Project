@@ -93,7 +93,6 @@ def telemetry(sid, data):
 
             plotmap = np.rot90(Rover.worldmap.clip(0, 255))
             map_add = cv2.addWeighted(plotmap, 1, Rover.ground_truth, 0.4, 0)
-            print('Add map max:', map_add.max())
             pil_img = Image.fromarray(map_add.clip(0, 255).astype(np.uint8))
             buff = BytesIO()
             pil_img.save(buff, format="JPEG")

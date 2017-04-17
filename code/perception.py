@@ -76,17 +76,15 @@ def pix_to_world(dist, angles, x_rover, y_rover, yaw_rover):
 
 # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
-    # Perform warping and color thresholding
-    warped = perspect_transform(Rover.img)
-    threshed = color_thresh(warped)
-    Rover.vision_image[:, :, 2] = threshed*255
-    # Get pixel values and angle/distance measurements to navigable surface pixels
-    xpix, ypix = rover_coords(threshed)
-    Rover.nav_dists, Rover.nav_angles = to_radial_coords(xpix, ypix)
+    # Perform perception steps to update Rover()
+    # Update Rover analysis image
+        # Rover.vision_image = ??
+    # Update Rover pixel distances and angles
+        # Rover.nav_dists = ??
+        # Rover.nav_angles = ??
     
     # Compute yaw values and x,y positions of navigable pixels in world space
-    x_world, y_world = pix_to_world(Rover.nav_dists, Rover.nav_angles, 
-                                    Rover.pos[0], Rover.pos[1], Rover.yaw)
-    # Update the map
-    Rover.worldmap[x_world, y_world, 2] += 10
+    # Update Rover worldmap
+    # Rover.worldmap = ??
+    
     return Rover
