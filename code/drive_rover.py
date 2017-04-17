@@ -36,20 +36,22 @@ class RoverState():
         self.pitch = None # Current pitch angle
         self.roll = None # Current roll angle
         self.vel = None # Current velocity
-        self.steer = None # Current steering angle
-        self.throttle = None # Current throttle value
-        self.brake = None # Current brake value
-        self.nav_angles = None # Measured angles of navigable terrain pixels
-        self.nav_dists = None # Measured distances of navigable terrain pixels
-        self.vision_image = np.zeros((160, 320, 3), dtype=np.float) # Image output from perception step
-        self.worldmap = np.zeros((200, 200, 3), dtype=np.float) # Worldmap
+        self.steer = 0 # Current steering angle
+        self.throttle = 0 # Current throttle value
+        self.brake = 0 # Current brake value
+        self.nav_angles = None # Angles of navigable terrain pixels
+        self.nav_dists = None # Distances of navigable terrain pixels
         self.ground_truth = ground_truth_3d # Ground truth worldmap
-        self.mode = 'forward' # Current mode 
+        self.mode = 'forward' # Current mode (can be forward or stop)
         self.throttle_set = 0.2 # Throttle setting when accelerating
         self.brake_set = 10 # Brake setting when braking
-        self.stop_forward = 100 # Threshold to initiate a stopping action
+        self.stop_forward = 100 # Threshold to initiate stopping
         self.go_forward = 1000 # Threshold to go forward again
         self.max_vel = 2 # Maximum velocity (meters/second)
+        # Image output from perception step
+        self.vision_image = np.zeros((160, 320, 3), dtype=np.float) 
+        # Worldmap
+        self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
 
 # Initialize our rover 
 Rover = RoverState()
