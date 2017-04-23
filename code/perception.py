@@ -11,12 +11,12 @@ def perspect_transform(img, src, dst):
     warped = cv2.warpPerspective(img, M, img_size)# keep same size as input image
     return warped
 
-# Identify pixels below the threshold
+# Identify pixels above the threshold
 # Threshold of RGB > 160 does a nice job of identifying ground pixels only
 def color_thresh(img, rgb_thresh=(160, 160, 160)):
     # Create an array of zeros same xy size as img, but single channel
     color_select = np.zeros_like(img[:,:,0])
-    # Require that each pixel be above all thre threshold values in RGB
+    # Require that each pixel be above all three threshold values in RGB
     # above_thresh will now contain a boolean array with "True"
     # where threshold was met
     above_thresh = (img[:,:,0] > rgb_thresh[0]) \
