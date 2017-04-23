@@ -20,6 +20,7 @@ import matplotlib.image as mpimg
 from perception import perception_step
 from decision import decision_step
 
+# Start socketio server (learn more at: https://python-socketio.readthedocs.io/en/latest/)
 sio = socketio.Server()
 app = Flask(__name__)
 
