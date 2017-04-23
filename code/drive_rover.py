@@ -20,7 +20,8 @@ import matplotlib.image as mpimg
 from perception import perception_step
 from decision import decision_step
 
-# Start socketio server (learn more at: https://python-socketio.readthedocs.io/en/latest/)
+# Initialize socketio server and Flask application 
+# (learn more at: https://python-socketio.readthedocs.io/en/latest/)
 sio = socketio.Server()
 app = Flask(__name__)
 
@@ -177,7 +178,7 @@ if __name__ == '__main__':
     else:
         print("NOT recording this run ...")
     
-    # wrap Flask application with engineio's middleware
+    # wrap Flask application with socketio's middleware
     app = socketio.Middleware(sio, app)
 
     # deploy as an eventlet WSGI server
