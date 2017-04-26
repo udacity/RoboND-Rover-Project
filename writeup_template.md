@@ -50,7 +50,13 @@ I used a combination of color and gradient thresholds to generate a binary image
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform 
+<<<<<<< HEAD
 Here's a [link to my video result](./output/test_mapping.mp4)
+||||||| merged common ancestors
+Here's a [link to my video result](./project_video.mp4)
+=======
+Here's a [link to my video result](./output/project_video.mp4)
+>>>>>>> 5c40b28ab06bd6bf9621add7dff98d2dd1821663
 
 ---
 
