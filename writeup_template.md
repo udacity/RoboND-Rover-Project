@@ -50,7 +50,7 @@ I used a combination of color and gradient thresholds to generate a binary image
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](../output/project_video.mp4)
 
 ---
 
