@@ -26,7 +26,12 @@ sio = socketio.Server()
 app = Flask(__name__)
 
 # Read in ground truth map and create 3-channel green version for overplotting
+# NOTE: images are read in by default with the origin (0, 0) in the upper left
+# and y-axis increasing downward.
 ground_truth = mpimg.imread('../calibration_images/map_bw.jpg')
+# This next line creates arrays of zeros in the red and blue channels
+# and puts the map into the green channel.  This is why the underlying 
+# map output looks green in the display image
 ground_truth_3d = np.dstack((ground_truth*0, ground_truth, ground_truth*0)).astype(np.float)
 
 # Define RoverState() class to retain rover state parameters
@@ -68,6 +73,7 @@ Rover = RoverState()
 def telemetry(sid, data):
     if data:
         global Rover
+        # Print out the fields in the telemetry data dictionary
         print(data.keys())
         # The current speed of the rover in m/s
         Rover.vel = np.float(data["speed"])
@@ -84,9 +90,9 @@ def telemetry(sid, data):
         # The current steering angle
         Rover.steer = np.float(data["steering_angle"])
 
-        print('speed=',Rover.vel, 'position', Rover.pos, 'throttle', 
-            Rover.throttle, 'steer_angle', Rover.steer)
-        
+        print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
+            Rover.throttle, 'steer_angle =', Rover.steer)
+  
         # Get the current image from the center camera of the rover
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
@@ -99,6 +105,7 @@ def telemetry(sid, data):
 
             plotmap = np.rot90(Rover.worldmap.clip(0, 255))
             map_add = cv2.addWeighted(plotmap, 1, Rover.ground_truth, 0.4, 0)
+            
             pil_img = Image.fromarray(map_add.clip(0, 255).astype(np.uint8))
             buff = BytesIO()
             pil_img.save(buff, format="JPEG")
@@ -109,9 +116,10 @@ def telemetry(sid, data):
             pil_img.save(buff, format="JPEG")
             outImageString2 = base64.b64encode(buff.getvalue()).decode("utf-8")
             
-            # The actuation step!  Send commands to the rover!
-            # commands = (throttle, brake, steering)
+            # The action step!  Send commands to the rover!
+            
             commands = (Rover.throttle, Rover.brake, Rover.steer)
+            print(commands)
             send_control(commands, outImageString1, outImageString2)
 
         else:
