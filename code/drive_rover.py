@@ -15,11 +15,12 @@ from io import BytesIO, StringIO
 import json
 import pickle
 import matplotlib.image as mpimg
+import time
 
 # Import functions for perception and decision making
 from perception import perception_step
 from decision import decision_step
-
+from output_images import create_output_images
 # Initialize socketio server and Flask application 
 # (learn more at: https://python-socketio.readthedocs.io/en/latest/)
 sio = socketio.Server()
@@ -28,15 +29,17 @@ app = Flask(__name__)
 # Read in ground truth map and create 3-channel green version for overplotting
 # NOTE: images are read in by default with the origin (0, 0) in the upper left
 # and y-axis increasing downward.
-ground_truth = mpimg.imread('../calibration_images/map_bw.jpg')
+ground_truth = mpimg.imread('../calibration_images/map_bw.png')
 # This next line creates arrays of zeros in the red and blue channels
 # and puts the map into the green channel.  This is why the underlying 
 # map output looks green in the display image
-ground_truth_3d = np.dstack((ground_truth*0, ground_truth, ground_truth*0)).astype(np.float)
+ground_truth_3d = np.dstack((ground_truth*0, ground_truth*255, ground_truth*0)).astype(np.float)
 
 # Define RoverState() class to retain rover state parameters
 class RoverState():
     def __init__(self):
+        self.start_time = None
+        self.total_time = None
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
         self.yaw = None # Current yaw angle
@@ -60,10 +63,15 @@ class RoverState():
         self.go_forward = 1000 # Threshold to go forward again
         self.max_vel = 2 # Maximum velocity (meters/second)
         # Image output from perception step
+        # Update this image to display your intermediate analysis steps
+        # on screen in autonomous mode
         self.vision_image = np.zeros((160, 320, 3), dtype=np.float) 
         # Worldmap
+        # Update this image with the positions of navigable terrain
+        # obstacles and rock samples
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
-
+        self.samples_pos = None
+        self.samples_found = None
 # Initialize our rover 
 Rover = RoverState()
 
@@ -73,6 +81,20 @@ Rover = RoverState()
 def telemetry(sid, data):
     if data:
         global Rover
+        
+        # Initialize start time and sample positions
+        if Rover.start_time == None:
+            Rover.start_time = time.time()
+            Rover.total_time = 0
+            samples_xpos = np.int_([np.float(pos.strip()) for pos in data["samples_x"].split(',')])
+            samples_ypos = np.int_([np.float(pos.strip()) for pos in data["samples_y"].split(',')])
+            Rover.samples_pos = (samples_xpos, samples_ypos)
+            Rover.samples_found = np.zeros((len(Rover.samples_pos[0]))).astype(np.int)
+        # Or just update elapsed time
+        else:
+            tot_time = time.time() - Rover.start_time
+            if np.isfinite(tot_time):
+                Rover.total_time = tot_time
         # Print out the fields in the telemetry data dictionary
         print(data.keys())
         # The current speed of the rover in m/s
@@ -100,27 +122,18 @@ def telemetry(sid, data):
 
         if np.isfinite(Rover.vel):
             
+            # Execute the perception and decision steps to update the Rover's state
             Rover = perception_step(Rover)
             Rover = decision_step(Rover)
 
-            plotmap = np.rot90(Rover.worldmap.clip(0, 255))
-            map_add = cv2.addWeighted(plotmap, 1, Rover.ground_truth, 0.4, 0)
-            
-            pil_img = Image.fromarray(map_add.clip(0, 255).astype(np.uint8))
-            buff = BytesIO()
-            pil_img.save(buff, format="JPEG")
-            outImageString1 = base64.b64encode(buff.getvalue()).decode("utf-8")
-            
-            pil_img = Image.fromarray(Rover.vision_image.astype(np.uint8))
-            buff = BytesIO()
-            pil_img.save(buff, format="JPEG")
-            outImageString2 = base64.b64encode(buff.getvalue()).decode("utf-8")
-            
+            # Create output images to send to server
+            out_image_string1, out_image_string2 = create_output_images(Rover)
+
             # The action step!  Send commands to the rover!
             
             commands = (Rover.throttle, Rover.brake, Rover.steer)
             print(commands)
-            send_control(commands, outImageString1, outImageString2)
+            send_control(commands, out_image_string1, out_image_string2)
 
         else:
 
