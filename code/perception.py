@@ -39,7 +39,7 @@ def to_polar_coords(x_pixel, y_pixel):
     return dist, angles
 
 # Define a function to map rover space pixels to world space
-def pix_to_world(xpix, ypix, x_rover, y_rover, yaw_rover, worldsize, scale):
+def pix_to_world(xpix, ypix, x_rover, y_rover, yaw_rover, world_size, scale):
     # Map pixels from rover space to world coords
     yaw = yaw_rover * np.pi / 180
     # Perform rotation, translation and clipping all at once

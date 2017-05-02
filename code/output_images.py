@@ -14,7 +14,7 @@ def create_output_images(Rover):
       else: 
             navigable = Rover.worldmap[:,:,2]
       if np.max(Rover.worldmap[:,:,0]) > 0:
-            obs_pix = Rover.worldmap[:,:,2] > 0
+            obs_pix = Rover.worldmap[:,:,0] > 0
             obstacle = Rover.worldmap[:,:,0] * (255 / np.mean(Rover.worldmap[obs_pix, 0]))
       else:
             obstacle = Rover.worldmap[:,:,0]
