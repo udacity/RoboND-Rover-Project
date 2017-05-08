@@ -161,7 +161,7 @@ def connect(sid, environ):
         skip_sid=True)
 
 def send_control(commands, image_string1, image_string2):
-    
+    # Define commands to be sent to the rover
     data={
         'throttle': commands[0].__str__(),
         'brake': commands[1].__str__(),
@@ -169,7 +169,7 @@ def send_control(commands, image_string1, image_string2):
         'inset_image': image_string1,
         'inset_image3': image_string2,
         }
-
+    # Send commands via socketIO server
     sio.emit(
         "data",
         data,
