@@ -171,7 +171,7 @@ def send_control(commands, image_string1, image_string2):
         }
 
     sio.emit(
-        "steer",
+        "data",
         data,
         skip_sid=True)
 
