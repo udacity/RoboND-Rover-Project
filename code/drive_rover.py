@@ -161,7 +161,7 @@ def connect(sid, environ):
         skip_sid=True)
 
 def send_control(commands, image_string1, image_string2):
-    #if image_string != '':
+    
     data={
         'throttle': commands[0].__str__(),
         'brake': commands[1].__str__(),
