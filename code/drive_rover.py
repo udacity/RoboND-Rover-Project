@@ -160,14 +160,14 @@ def connect(sid, environ):
         sample_data,
         skip_sid=True)
 
-def send_control(commands, image_string1, image_string3):
+def send_control(commands, image_string1, image_string2):
     #if image_string != '':
     data={
         'throttle': commands[0].__str__(),
         'brake': commands[1].__str__(),
         'steering_angle': commands[2].__str__(),
         'inset_image': image_string1,
-        'inset_image3': image_string3,
+        'inset_image3': image_string2,
         }
 
     sio.emit(
