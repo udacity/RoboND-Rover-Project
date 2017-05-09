@@ -20,7 +20,7 @@ import time
 # Import functions for perception and decision making
 from perception import perception_step
 from decision import decision_step
-from output_images import create_output_images
+from supporting_functions import update_rover, create_output_images
 # Initialize socketio server and Flask application 
 # (learn more at: https://python-socketio.readthedocs.io/en/latest/)
 sio = socketio.Server()
@@ -38,8 +38,8 @@ ground_truth_3d = np.dstack((ground_truth*0, ground_truth*255, ground_truth*0)).
 # Define RoverState() class to retain rover state parameters
 class RoverState():
     def __init__(self):
-        self.start_time = None
-        self.total_time = None
+        self.start_time = None # To record the start time of navigation
+        self.total_time = None # To record total duration of naviagation
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
         self.yaw = None # Current yaw angle
@@ -70,8 +70,8 @@ class RoverState():
         # Update this image with the positions of navigable terrain
         # obstacles and rock samples
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
-        self.samples_pos = None
-        self.samples_found = None
+        self.samples_pos = None # To store the actual sample positions
+        self.samples_found = None # To count the number of samples found
 # Initialize our rover 
 Rover = RoverState()
 
@@ -81,45 +81,10 @@ Rover = RoverState()
 def telemetry(sid, data):
     if data:
         global Rover
+
+        # Initialize / update Rover with current telemetry
+        Rover = update_rover(Rover, data)
         
-        # Initialize start time and sample positions
-        if Rover.start_time == None:
-            Rover.start_time = time.time()
-            Rover.total_time = 0
-            samples_xpos = np.int_([np.float(pos.strip()) for pos in data["samples_x"].split(',')])
-            samples_ypos = np.int_([np.float(pos.strip()) for pos in data["samples_y"].split(',')])
-            Rover.samples_pos = (samples_xpos, samples_ypos)
-            Rover.samples_found = np.zeros((len(Rover.samples_pos[0]))).astype(np.int)
-        # Or just update elapsed time
-        else:
-            tot_time = time.time() - Rover.start_time
-            if np.isfinite(tot_time):
-                Rover.total_time = tot_time
-        # Print out the fields in the telemetry data dictionary
-        print(data.keys())
-        # The current speed of the rover in m/s
-        Rover.vel = np.float(data["speed"])
-        # The current position of the rover
-        Rover.pos = np.fromstring(data["position"], dtype=float, sep=',')
-        # The current yaw angle of the rover
-        Rover.yaw = np.float(data["yaw"])
-        # The current yaw angle of the rover
-        Rover.pitch = np.float(data["pitch"])
-        # The current yaw angle of the rover
-        Rover.roll = np.float(data["roll"])
-        # The current throttle setting
-        Rover.throttle = np.float(data["throttle"])
-        # The current steering angle
-        Rover.steer = np.float(data["steering_angle"])
-
-        print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
-            Rover.throttle, 'steer_angle =', Rover.steer)
-  
-        # Get the current image from the center camera of the rover
-        imgString = data["image"]
-        image = Image.open(BytesIO(base64.b64decode(imgString)))
-        Rover.img = np.asarray(image)
-
         if np.isfinite(Rover.vel):
             
             # Execute the perception and decision steps to update the Rover's state
@@ -141,7 +106,9 @@ def telemetry(sid, data):
             # if we got a bad velocity value in telemetry
             send_control((0, 0, 0), '', '')
         
-        # Save image frame if folder was specified
+        # If you want to save camera images from autonomous driving specify a path
+        # Example: $ python drive_rover.py image_folder_path
+        # Conditioal to save image frame if folder was specified
         if args.image_folder != '':
             timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
             image_filename = os.path.join(args.image_folder, timestamp)
