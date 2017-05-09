@@ -84,9 +84,9 @@ def telemetry(sid, data):
 
         # Initialize / update Rover with current telemetry
         Rover = update_rover(Rover, data)
-        
+
         if np.isfinite(Rover.vel):
-            
+
             # Execute the perception and decision steps to update the Rover's state
             Rover = perception_step(Rover)
             Rover = decision_step(Rover)
@@ -95,27 +95,25 @@ def telemetry(sid, data):
             out_image_string1, out_image_string2 = create_output_images(Rover)
 
             # The action step!  Send commands to the rover!
-            
             commands = (Rover.throttle, Rover.brake, Rover.steer)
-            #print(commands)
             send_control(commands, out_image_string1, out_image_string2)
 
+        # In case of invalid telemetry, send null commands
         else:
 
             # Send zeros for throttle, brake and steer and empty images
-            # if we got a bad velocity value in telemetry
             send_control((0, 0, 0), '', '')
-        
+
         # If you want to save camera images from autonomous driving specify a path
         # Example: $ python drive_rover.py image_folder_path
-        # Conditioal to save image frame if folder was specified
+        # Conditional to save image frame if folder was specified
         if args.image_folder != '':
             timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
             image_filename = os.path.join(args.image_folder, timestamp)
             image.save('{}.jpg'.format(image_filename))
+
     else:
         sio.emit('manual', data={}, skip_sid=True)
-
 
 @sio.on('connect')
 def connect(sid, environ):
