@@ -28,7 +28,7 @@ Included in the IPython notebook called `Rover_Project_Test_Notebook.ipynb` are 
 jupyter notebook
 ```
 
-This command will bring up a browser window in the current directory where you can navigate to wherever `Rover Project Test Notebook.ipynb` is and select it.  Run the cells in the notebook from top to bottom to see the various data analysis steps.  
+This command will bring up a browser window in the current directory where you can navigate to wherever `Rover_Project_Test_Notebook.ipynb` is and select it.  Run the cells in the notebook from top to bottom to see the various data analysis steps.  
 
 The last two cells in the notebook are for running the analysis on a folder of test images to create a map of the simulator environment and write the output to a video.  These cells should run as-is and save a video called `test_mapping.mp4` to the `output` folder.  This should give you an idea of how to go about modifying the `process_image()` function to perform mapping on your data.  
 
