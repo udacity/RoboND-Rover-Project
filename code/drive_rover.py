@@ -83,7 +83,7 @@ def telemetry(sid, data):
         global Rover
 
         # Initialize / update Rover with current telemetry
-        Rover = update_rover(Rover, data)
+        Rover, image = update_rover(Rover, data)
 
         if np.isfinite(Rover.vel):
 

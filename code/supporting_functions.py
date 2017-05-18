@@ -44,7 +44,8 @@ def update_rover(Rover, data):
       image = Image.open(BytesIO(base64.b64decode(imgString)))
       Rover.img = np.asarray(image)
 
-      return Rover
+      # Return updated Rover and separate image for optional saving
+      return Rover, image
 
 # Define a function to create display output given worldmap results
 def create_output_images(Rover):
