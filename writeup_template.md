@@ -19,7 +19,7 @@
 * Fill in the `perception_step()` function within the `perception.py` script with the appropriate image processing functions to create a map and update `Rover()` data (similar to what you did with `process_image()` in the notebook). 
 * Fill in the `decision_step()` function within the `decision.py` script with conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands. 
 * Iterate on your perception and decision function until your rover does a reasonable (need to define metric) job of navigating and mapping.  
-
+* **Note: running the simulator with different choices of resolution and graphics quality may produce different results!  Make a note of your simulator settings in this writeup when you submit the project.**
 [//]: # (Image References)
 
 [image1]: ./misc/rover_image.jpg
