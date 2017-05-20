@@ -63,10 +63,9 @@ def decision_step(Rover):
     # Just to make the rover do something 
     # even if no modifications have been made to the code
     else:
-        Rover.throttle = 0#Rover.throttle_set
+        Rover.throttle = Rover.throttle_set
         Rover.steer = 0
         Rover.brake = 0
-        if Rover.near_sample == 1 and Rover.vel == 0:
-            Rover.pick_up = True
+
     return Rover
 

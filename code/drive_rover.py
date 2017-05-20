@@ -99,7 +99,7 @@ def telemetry(sid, data):
             commands = (Rover.throttle, Rover.brake, Rover.steer)
             send_control(commands, out_image_string1, out_image_string2)
  
-            # If we are in a state where want to pickup a rock send pickup command
+            # If in a state where want to pickup a rock send pickup command
             if Rover.pick_up:
                 send_pickup()
                 # Reset Rover flags
