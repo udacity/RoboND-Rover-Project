@@ -71,7 +71,9 @@ class RoverState():
         # obstacles and rock samples
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
         self.samples_pos = None # To store the actual sample positions
-        self.samples_found = None # To count the number of samples found
+        self.samples_found = 0 # To count the number of samples found
+        self.near_sample = False # Set to True if within reach of a rock sample
+        self.pick_up = False # Set to True to trigger rock pickup
 # Initialize our rover 
 Rover = RoverState()
 
@@ -81,7 +83,6 @@ Rover = RoverState()
 def telemetry(sid, data):
     if data:
         global Rover
-
         # Initialize / update Rover with current telemetry
         Rover, image = update_rover(Rover, data)
 
@@ -97,7 +98,12 @@ def telemetry(sid, data):
             # The action step!  Send commands to the rover!
             commands = (Rover.throttle, Rover.brake, Rover.steer)
             send_control(commands, out_image_string1, out_image_string2)
-
+ 
+            # If we are in a state where want to pickup a rock send pickup command
+            if Rover.pick_up:
+                send_pickup()
+                # Reset Rover flags
+                Rover.pick_up = False
         # In case of invalid telemetry, send null commands
         else:
 
@@ -140,6 +146,14 @@ def send_control(commands, image_string1, image_string2):
         data,
         skip_sid=True)
 
+# Define a function to send the "pickup" command 
+def send_pickup():
+    print("Picking up")
+    pickup = {}
+    sio.emit(
+        "pickup",
+        pickup,
+        skip_sid=True)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')

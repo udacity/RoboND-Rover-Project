@@ -35,9 +35,11 @@ def update_rover(Rover, data):
       Rover.throttle = np.float(data["throttle"])
       # The current steering angle
       Rover.steer = np.float(data["steering_angle"])
+      # Near sample flag
+      Rover.near_sample = np.int(data["near_sample"])
 
       print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
-      Rover.throttle, 'steer_angle =', Rover.steer)
+      Rover.throttle, 'steer_angle =', Rover.steer, 'near_sample', Rover.near_sample, data["picking_up"])
 
       # Get the current image from the center camera of the rover
       imgString = data["image"]
