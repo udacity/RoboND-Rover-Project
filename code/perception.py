@@ -38,16 +38,36 @@ def to_polar_coords(x_pixel, y_pixel):
     angles = np.arctan2(y_pixel, x_pixel)
     return dist, angles
 
-# Define a function to map rover space pixels to world space
-def pix_to_world(xpix, ypix, x_rover, y_rover, yaw_rover, world_size, scale):
-    # Map pixels from rover space to world coords
-    yaw = yaw_rover * np.pi / 180
+# Define a function to apply a rotation to pixel positions
+def rotate_pix(xpix, ypix, yaw):
+    # TODO:
+    # Convert yaw to radians
+    # Apply a rotation
+    xpix_rotated = 0
+    ypix_rotated = 0
+    # Return the result  
+    return xpix_rotated, ypix_rotated
+
+# Define a function to perform a translation
+def translate_pix(xpix_rot, ypix_rot, xpos, ypos, scale): 
+    # TODO:
+    # Apply a scaling and a translation
+    xpix_translated = 0
+    ypix_translated = 0
+    # Return the result  
+    return xpix_translated, ypix_translated
+
+# Define a function to apply rotation and translation (and clipping)
+# Once you define the two functions above this function should work
+def pix_to_world(xpix, ypix, xpos, ypos, yaw, world_size, scale):
+    # Apply rotation
+    xpix_rot, ypix_rot = rotate_pix(xpix, ypix, yaw)
+    # Apply translation
+    xpix_tran, ypix_tran = translate_pix(xpix_rot, ypix_rot, xpos, ypos, scale)
     # Perform rotation, translation and clipping all at once
-    x_pix_world = np.clip(np.int_((((xpix * np.cos(yaw)) - (ypix * np.sin(yaw)))/scale) + x_rover), 
-                            0, world_size - 1)
-    y_pix_world = np.clip(np.int_((((xpix * np.sin(yaw)) + (ypix * np.cos(yaw)))/scale) + y_rover), 
-                            0, world_size - 1)
-  
+    x_pix_world = np.clip(np.int_(xpix_tran), 0, world_size - 1)
+    y_pix_world = np.clip(np.int_(ypix_tran), 0, world_size - 1)
+    # Return the result
     return x_pix_world, y_pix_world
 
 # Define a function to perform a perspective transform
