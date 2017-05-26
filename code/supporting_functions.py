@@ -37,7 +37,9 @@ def update_rover(Rover, data):
       Rover.steer = np.float(data["steering_angle"])
       # Near sample flag
       Rover.near_sample = np.int(data["near_sample"])
-
+      # Picking up flag
+      Rover.picking_up = np.int(data["picking_up"])
+      
       print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
       Rover.throttle, 'steer_angle =', Rover.steer, 'near_sample', Rover.near_sample, data["picking_up"])
 
