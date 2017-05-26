@@ -83,19 +83,21 @@ Rover = RoverState()
 frame_counter = 0
 # Initalize second counter
 second_counter = time.time()
+fps = None
 
 
 # Define telemetry function for what to do with incoming data
 @sio.on('telemetry')
 def telemetry(sid, data):
 
-    global frame_counter, second_counter
+    global frame_counter, second_counter, fps
     frame_counter+=1
     # Do a rough calculation of frames per second (FPS)
     if (time.time() - second_counter) > 1:
-        print ("Current FPS: {}".format(frame_counter))
+        fps = frame_counter
         frame_counter = 0
         second_counter = time.time()
+    print("Current FPS: {}".format(fps))
 
     if data:
         global Rover
