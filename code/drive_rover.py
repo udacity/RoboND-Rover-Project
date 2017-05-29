@@ -40,6 +40,7 @@ class RoverState():
     def __init__(self):
         self.start_time = None # To record the start time of navigation
         self.total_time = None # To record total duration of naviagation
+        self.stuck_time = None
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
         self.yaw = None # Current yaw angle
@@ -51,6 +52,8 @@ class RoverState():
         self.brake = 0 # Current brake value
         self.nav_angles = None # Angles of navigable terrain pixels
         self.nav_dists = None # Distances of navigable terrain pixels
+        self.obst_dists = None
+        self.obst_angles = None
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
         self.throttle_set = 0.2 # Throttle setting when accelerating
@@ -59,7 +62,7 @@ class RoverState():
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
         # get creative in adding new fields or modifying these!
-        self.stop_forward = 50 # Threshold to initiate stopping
+        self.stop_forward = 150 # Threshold to initiate stopping
         self.go_forward = 500 # Threshold to go forward again
         self.max_vel = 2 # Maximum velocity (meters/second)
         # Image output from perception step
@@ -111,7 +114,12 @@ def telemetry(sid, data):
             Rover = decision_step(Rover)
 
             # Create output images to send to server
-            out_image_string1, out_image_string2 = create_output_images(Rover)
+            #out_image_string1, out_image_string2 = create_output_images(Rover)
+            if((Rover.roll < 1 or Rover.roll > 359) and (Rover.pitch < 0.5 or Rover.pitch > 359.5)):
+                out_image_string1, out_image_string2 = create_output_images(Rover)
+            else:
+                out_image_string1 = ''
+                out_image_string2 = ''
 
             # The action step!  Send commands to the rover!
             commands = (Rover.throttle, Rover.brake, Rover.steer)
