@@ -118,7 +118,7 @@ def telemetry(sid, data):
             send_control(commands, out_image_string1, out_image_string2)
  
             # If in a state where want to pickup a rock send pickup command
-            if Rover.send_pickup:
+            if Rover.send_pickup and not Rover.picking_up:
                 send_pickup()
                 # Reset Rover flags
                 Rover.send_pickup = False
@@ -163,7 +163,7 @@ def send_control(commands, image_string1, image_string2):
         "data",
         data,
         skip_sid=True)
-
+    eventlet.sleep(0)
 # Define a function to send the "pickup" command 
 def send_pickup():
     print("Picking up")
@@ -172,7 +172,7 @@ def send_pickup():
         "pickup",
         pickup,
         skip_sid=True)
-
+    eventlet.sleep(0)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument(
