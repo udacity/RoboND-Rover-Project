@@ -72,15 +72,33 @@ class RoverState():
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
         self.samples_pos = None # To store the actual sample positions
         self.samples_found = 0 # To count the number of samples found
-        self.near_sample = False # Set to True if within reach of a rock sample
-        self.pick_up = False # Set to True to trigger rock pickup
+        self.near_sample = 0 # Will be set to telemetry value data["near_sample"]
+        self.picking_up = 0 # Will be set to telemetry value data["picking_up"]
+        self.send_pickup = False # Set to True to trigger rock pickup
 # Initialize our rover 
 Rover = RoverState()
+
+# Variables to track frames per second (FPS)
+# Intitialize frame counter
+frame_counter = 0
+# Initalize second counter
+second_counter = time.time()
+fps = None
 
 
 # Define telemetry function for what to do with incoming data
 @sio.on('telemetry')
 def telemetry(sid, data):
+
+    global frame_counter, second_counter, fps
+    frame_counter+=1
+    # Do a rough calculation of frames per second (FPS)
+    if (time.time() - second_counter) > 1:
+        fps = frame_counter
+        frame_counter = 0
+        second_counter = time.time()
+    print("Current FPS: {}".format(fps))
+
     if data:
         global Rover
         # Initialize / update Rover with current telemetry
@@ -100,10 +118,10 @@ def telemetry(sid, data):
             send_control(commands, out_image_string1, out_image_string2)
  
             # If in a state where want to pickup a rock send pickup command
-            if Rover.pick_up:
+            if Rover.send_pickup and not Rover.picking_up:
                 send_pickup()
                 # Reset Rover flags
-                Rover.pick_up = False
+                Rover.send_pickup = False
         # In case of invalid telemetry, send null commands
         else:
 
@@ -145,7 +163,7 @@ def send_control(commands, image_string1, image_string2):
         "data",
         data,
         skip_sid=True)
-
+    eventlet.sleep(0)
 # Define a function to send the "pickup" command 
 def send_pickup():
     print("Picking up")
@@ -154,7 +172,7 @@ def send_pickup():
         "pickup",
         pickup,
         skip_sid=True)
-
+    eventlet.sleep(0)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument(
