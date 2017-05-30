@@ -89,7 +89,7 @@ def create_output_images(Rover):
       # to confirm whether detections are real
       if rock_world_pos[0].any():
             rock_size = 2
-            for idx in range(len(Rover.samples_pos[0]) - 1):
+            for idx in range(len(Rover.samples_pos[0])):
                   test_rock_x = Rover.samples_pos[0][idx]
                   test_rock_y = Rover.samples_pos[1][idx]
                   rock_sample_dists = np.sqrt((test_rock_x - rock_world_pos[1])**2 + \
