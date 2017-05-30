@@ -36,7 +36,7 @@ def decision_step(Rover):
                 wall_left_dist = np.average(Rover.obst_dists * 180/np.pi, weights=(Rover.obst_angles > 0))
                 wall_right_dist = np.average(Rover.obst_dists * 180/np.pi, weights=(Rover.obst_angles < 0))
                 ########----------- Tested --------------#########
-                Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi + 10), -15, 15)
+                Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi + 8), -15, 15)
                 #wall_angle = np.mean(Rover.obst_angles * 180/np.pi)
                 #if wall_angle < 0.:
                 #    Rover.steer = 15
@@ -55,10 +55,8 @@ def decision_step(Rover):
                         Rover.mode = 'stop'
                     elif Rover.vel > 0.2:
                         Rover.steer = 0
-                        Rover.brake = Rover.brake_set
+                        Rover.brake = Rover.break_set
                         Rover.mode = 'forward'
-                ###########################################################
-                ########### checking whether robot is stuck ##################
                 if(Rover.vel > 0):
                     Rover.stuck_time = 0
                 elif (Rover.total_time > 1 and Rover.vel == 0.0):
@@ -66,8 +64,6 @@ def decision_step(Rover):
                         Rover.stuck_time = Rover.total_time
                     elif (Rover.total_time - Rover.stuck_time) > 1:
                         Rover.mode = 'stuck'
-                #if(Rover.to_be_picked == True):
-                #    Rover.mode = 'sample'
 
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
             elif len(Rover.nav_angles) < Rover.stop_forward:
@@ -105,49 +101,11 @@ def decision_step(Rover):
                     steer_nav = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
                     Rover.steer = steer_nav
                     Rover.mode = 'forward'
-                #if(Rover.to_be_picked == True):
-                #    Rover.mode = 'sample'
         elif Rover.mode == 'stuck':
             Rover.throttle = 0
             Rover.steer == -15
-            if(Rover.total_time - Rover.stuck_time) > 1.6:
+            if(Rover.total_time - Rover.stuck_time) > 2:
                 Rover.mode = 'forward'
-        elif Rover.mode == 'sample':
-            #sample_x = Rover.rock_to_pick[0] - Rover.pos[0]
-            #sample_y = Rover.rock_to_pick[1] - Rover.pos[1]
-            #sample_dist = np.mean(Rover.sample_dists)
-            if Rover.near_sample:
-                Rover.brake = Rover.brake_set
-                Rover.send_pickup = True
-                Rover.mode = 'forward'
-                Rover.to_be_picked = False
-            else:
-                nav_sample_angle = np.mean(Rover.sample_angles * 180/np.pi)
-                if (nav_sample_angle > 180):
-                    Rover.throttle = 0
-                    if Rover.vel > 0.2:
-                        Rover.brake = Rover.brake_set
-                    else:
-                        Rover.brake = 0
-                    Rover.steer = np.clip(nav_sample_angle, -15, 15)
-                else:
-                    Rover.steer = np.clip(nav_sample_angle, -15, 15);
-                    Rover.throttle = Rover.throttle_set
-                    Rover.brake = 0
-                if (np.any(Rover.nav_angles > 0)):
-                    nav_left = np.average(Rover.nav_angles * 180/np.pi, weights=(Rover.nav_angles > 0))
-                else:
-                    nav_left = -1
-                
-                if (nav_left < 5 and (nav_left != -1)):
-                    Rover.steer = -15
-                if(Rover.vel > 0):
-                    Rover.stuck_time = 0
-                elif (Rover.total_time > 1 and Rover.vel == 0.0):
-                    if Rover.stuck_time == 0:
-                        Rover.stuck_time = Rover.total_time
-                    elif (Rover.total_time - Rover.stuck_time) > 1:
-                        Rover.mode = 'stuck'
     # Just to make the rover do something 
     # even if no modifications have been made to the code
     else:
@@ -156,4 +114,3 @@ def decision_step(Rover):
         Rover.brake = 0
 
     return Rover
-

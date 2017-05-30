@@ -58,7 +58,7 @@ class RoverState():
         self.sample_angles = None
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
-        self.throttle_set = 0.2 # Throttle setting when accelerating
+        self.throttle_set = 0.4 # Throttle setting when accelerating
         self.brake_set = 10 # Brake setting when braking
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
@@ -77,8 +77,8 @@ class RoverState():
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
         self.samples_pos = None # To store the actual sample positions
         self.samples_found = 0 # To count the number of samples found
-        self.to_be_picked = False #flag to check if a rock is available nearby
-        self.rock_to_pick = None #Identify which the rock is to be picked. will be used in going near the rock
+        #self.to_be_picked = False #flag to check if a rock is available nearby
+        #self.rock_to_pick = None #Identify which the rock is to be picked. will be used in going near the rock
         self.near_sample = 0 # Will be set to telemetry value data["near_sample"]
         self.picking_up = 0 # Will be set to telemetry value data["picking_up"]
         self.send_pickup = False # Set to True to trigger rock pickup
@@ -134,8 +134,8 @@ def telemetry(sid, data):
                 send_pickup()
                 # Reset Rover flags
                 Rover.send_pickup = False
-            if Rover.picking_up and not Rover.near_sample:
-                Rover.picking_up = False
+            #if Rover.picking_up and not Rover.near_sample:
+            #    Rover.picking_up = False
         # In case of invalid telemetry, send null commands
         else:
 
