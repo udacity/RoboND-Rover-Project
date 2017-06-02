@@ -10,8 +10,8 @@ def decision_step(Rover):
     # improve on this decision tree to do a good job of navigating autonomously!
 
     # Example:
-    # Check if we have vision data to make decisions with
-    if Rover.nav_angles is not None:
+    # Check if we have vision data to make decisions with and that it is not near a sample (i.e. don't go to stop mode if near sample)
+    if Rover.nav_angles is not None or len(Rover.sample_angles) > 0:
         # Check for Rover.mode status
         if Rover.mode == 'forward': 
             # Check the extent of navigable terrain
@@ -43,7 +43,7 @@ def decision_step(Rover):
                 #if wall_angle > 6.:
                 #    Rover.steer = -15
                 #################################################
-                if(nav_left > 5 and ((wall_right_dist < wall_left_dist))): # and wall_left_dist > 1
+                if((wall_right_dist < wall_left_dist)): # and wall_left_dist > 1
                     Rover.steer = 15
                 elif(nav_left < 5 and (nav_left != -1)):
                     Rover.steer = -15
@@ -57,13 +57,41 @@ def decision_step(Rover):
                         Rover.steer = 0
                         Rover.brake = Rover.break_set
                         Rover.mode = 'forward'
+                ########################## Pick up sample rock ##################################
+                if Rover.near_sample or Rover.picking_up:
+                    Rover.throttle = 0
+                    Rover.brake = Rover.brake_set
+                    #Rover.steer = 0
+                    if not Rover.picking_up:
+                        Rover.send_pickup = True
+                    Rover.mode = 'forward'
+                elif len(Rover.sample_angles) > 0 :
+                    Rover.steer = np.clip(np.mean(Rover.sample_angles * 180/np.pi), -15, 15)
+                    Rover.throttle = Rover.throttle_set / 2
+                    Rover.mode = 'forward'
+                    if Rover.vel > Rover.max_vel/2:
+                        Rover.throttle = 0
+                        Rover.brake = Rover.brake_set
+                    elif Rover.vel == 0.0:
+                        Rover.throttle = 0
+                        if Rover.wall_left_dist < Rover.wall_right_dist: # Turn according to wall distances
+                            Rover.steer = -15
+                        else:
+                            Rover.steer = 15
+                ###################################################################################    
+                
+                ################################# check if robot is stuck #########################
                 if(Rover.vel > 0):
                     Rover.stuck_time = 0
-                elif (Rover.total_time > 1 and Rover.vel == 0.0):
+                elif (Rover.total_time > 1 and Rover.vel < 0.2 and (not Rover.picking_up)):
                     if Rover.stuck_time == 0:
                         Rover.stuck_time = Rover.total_time
                     elif (Rover.total_time - Rover.stuck_time) > 1:
                         Rover.mode = 'stuck'
+                ##################################################################################
+                
+                Rover.picking_up = False # This is required as even after picking up the stone, the flag remains true
+                #Rover.near_sample = False
 
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
             elif len(Rover.nav_angles) < Rover.stop_forward:
