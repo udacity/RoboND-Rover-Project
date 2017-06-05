@@ -17,14 +17,14 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     # Return the binary image
     return color_select
 
-# Define a function to convert to rover-centric coordinates
+# Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
     # Identify nonzero pixels
     ypos, xpos = binary_img.nonzero()
     # Calculate pixel positions with reference to the rover position being at the 
     # center bottom of the image.  
-    x_pixel = np.absolute(ypos - binary_img.shape[0]).astype(np.float)
-    y_pixel = -(xpos - binary_img.shape[0]).astype(np.float)
+    x_pixel = -(ypos - binary_img.shape[0]).astype(np.float)
+    y_pixel = -(xpos - binary_img.shape[1]/2 ).astype(np.float)
     return x_pixel, y_pixel
 
 
