@@ -7,7 +7,7 @@ import time
 
 def update_rover(Rover, data):
     # Initialize start time and sample positions
-    if Rover.start_time == None:
+    if Rover.start_time == None and Rover.start_pos == None:
         Rover.start_time = time.time()
         Rover.total_time = 0
         samples_xpos = np.int_([np.float(pos.strip()) for pos in data["samples_x"].split(',')])
@@ -39,6 +39,9 @@ def update_rover(Rover, data):
     Rover.near_sample = np.int(data["near_sample"])
     # Picking up flag
     Rover.picking_up = np.int(data["picking_up"])
+    
+    if Rover.start_pos is None:
+        Rover.start_pos = Rover.pos # Save starting position, to return after finding all samples
       
     print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
     Rover.throttle, 'steer_angle =', Rover.steer, 'near_sample', Rover.near_sample, 
@@ -74,6 +77,7 @@ def create_output_images(Rover):
     #plotmap[:, :, 1] = rocks
     plotmap[:, :, 2] = navigable
     plotmap = plotmap.clip(0, 255)
+    
     # Overlay obstacle and navigable terrain map with ground truth map
     map_add = cv2.addWeighted(plotmap, 1, Rover.ground_truth, 0.5, 0)
 
@@ -83,7 +87,7 @@ def create_output_images(Rover):
     # to confirm whether detections are real
     if rock_world_pos[0].any():
         rock_size = 2
-        for idx in range(len(Rover.samples_pos[0]) - 1):
+        for idx in range(len(Rover.samples_pos[0])):
             test_rock_x = Rover.samples_pos[0][idx]
             test_rock_y = Rover.samples_pos[1][idx]
             rock_sample_dists = np.sqrt((test_rock_x - rock_world_pos[1])**2 + \
@@ -93,8 +97,6 @@ def create_output_images(Rover):
             # sample on the map
             if np.min(rock_sample_dists) < 3:
                 Rover.samples_found[idx] = 1
-                #Rover.rock_to_pick = [test_rock_x, test_rock_y]
-                #Rover.to_be_picked = True
                 map_add[test_rock_y-rock_size:test_rock_y+rock_size, 
                 test_rock_x-rock_size:test_rock_x+rock_size, :] = 255
 
@@ -124,8 +126,13 @@ def create_output_images(Rover):
                   cv2.FONT_HERSHEY_COMPLEX, 0.4, (255, 255, 255), 1)
     cv2.putText(map_add,"Fidelity: "+str(fidelity)+'%', (0, 40), 
                   cv2.FONT_HERSHEY_COMPLEX, 0.4, (255, 255, 255), 1)
+    #cv2.putText(map_add,"Mode: "+str(Rover.mode)+'%', (0, 40), 
+    #              cv2.FONT_HERSHEY_COMPLEX, 0.4, (255, 255, 255), 1)
     cv2.putText(map_add,"Rocks Found: "+str(np.sum(Rover.samples_found)), (0, 55), 
                   cv2.FONT_HERSHEY_COMPLEX, 0.4, (255, 255, 255), 1)
+    #Below is to test nav_left
+    #cv2.putText(map_add,"nav_left: "+str(np.sum(Rover.nav_left_angle)), (0, 55), 
+    #              cv2.FONT_HERSHEY_COMPLEX, 0.4, (255, 255, 255), 1)
 
     # Convert map and vision image to base64 strings for sending to server
     pil_img = Image.fromarray(map_add.astype(np.uint8))

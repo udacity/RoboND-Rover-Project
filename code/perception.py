@@ -127,6 +127,8 @@ def perception_step(Rover):
     terrain = color_thresh(warped_img)
     rock_samples = rock_thresh(warped_img)
     obstacles = obstacle_thresh(warped_img)
+    obstacles[:, :100] = 0 # to remove wrongly mapped obstacle pixels
+    obstacles[:, 230:] = 0
     
     # 4) Update Rover.vision_image (this will be displayed on left side of screen)
         # Example: Rover.vision_image[:,:,0] = obstacle color-thresholded binary image
