@@ -74,7 +74,7 @@ def decision_step(Rover):
             # If we're in stop mode but still moving keep braking
             if Rover.vel > 0.2:
                 Rover.throttle = 0
-                Rover.brake = Rover.brake_set
+                Rover.brake = Rover.brake_hard
                 Rover.steer = 0
             # If we're not moving (vel < 0.2) then do something else
             elif Rover.vel <= 0.2:
