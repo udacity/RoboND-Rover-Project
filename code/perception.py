@@ -133,14 +133,7 @@ def perception_step(Rover):
     # to a grid where each 10x10 pixel square represents 1 square meter
     
     # Define source point
-    src_left_bottom = [53.0484, 124.403]
-    src_left_top = [118.21, 93.4355]
-    src_right_top = [188.532, 93.4355]
-    src_right_bottom = [261.435, 124.403]
-
-    source = np.float32([src_left_bottom, src_left_top,
-                    src_right_top, src_right_bottom])
-    
+    source = np.float32([[14, 140], [301 ,140],[200, 96], [118, 96]])
     # The destination box will be 2*dst_size on each side
     dst_size = 5 
     # Set a bottom offset to account for the fact that the bottom of the image 
