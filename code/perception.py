@@ -126,7 +126,7 @@ def perception_step(Rover):
         return Rover
         
     # Get the image
-    image = Rover.img
+    rover_img = Rover.img
     
     # 1) Define source and destination points for perspective transform
     # These source and destination points are defined to warp the image
@@ -142,12 +142,12 @@ def perception_step(Rover):
     bottom_offset = 6
     
     # 2) Apply perspective transform
-    destination = np.float32([[image.shape[1]/2 - dst_size, image.shape[0] - bottom_offset],
-                  [image.shape[1]/2 + dst_size, image.shape[0] - bottom_offset],
-                  [image.shape[1]/2 + dst_size, image.shape[0] - 2*dst_size - bottom_offset], 
-                  [image.shape[1]/2 - dst_size, image.shape[0] - 2*dst_size - bottom_offset],
-                  ])
-    warped = perspect_transform(image, source, destination)
+    destination = np.float32([[rover_img.shape[1]/2 - dst_size, rover_img.shape[0] - bottom_offset],
+                  [rover_img.shape[1]/2 + dst_size, rover_img.shape[0] - bottom_offset],
+                  [rover_img.shape[1]/2 + dst_size, rover_img.shape[0] - 2*dst_size - bottom_offset], 
+                  [rover_img.shape[1]/2 - dst_size, rover_img.shape[0] - 2*dst_size - bottom_offset],
+                 ])
+    warped = perspect_transform(rover_img, source, destination)
     
     # 3) Apply color threshold to identify navigable terrain/obstacles/rock samples
     navigable = color_thresh(warped)
