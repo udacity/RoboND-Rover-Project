@@ -17,6 +17,40 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     # Return the binary image
     return color_select
 
+# Invert the color threshold function to get obstacles
+def get_obstacles_1(img, rgb_thresh=(160, 160, 160)):
+    # Create an array of ones same xy size as img, but single channel
+    obstacles = np.ones_like(img[:,:,0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    above_thresh = (img[:,:,0] > rgb_thresh[0]) \
+                & (img[:,:,1] > rgb_thresh[1]) \
+                & (img[:,:,2] > rgb_thresh[2])
+    # Index the array of zeros with the boolean array and set to 0
+    obstacles[above_thresh] = 0
+    # Return the binary image
+    return obstacles
+
+# get the rocks
+def get_rock(img, rock_low_thresh=(0, 0, 0), rock_high_thresh=(255, 255, 255)):
+    # Create an array of zeros same xy size as img, but single channel
+    rock = np.zeros_like(img[:,:,0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    above_low = (img[:,:,0] > rock_low_thresh[0]) \
+                & (img[:,:,1] > rock_low_thresh[1]) \
+                & (img[:,:,2] > rock_low_thresh[2])
+    below_high = (img[:,:,0] < rock_high_thresh[0]) \
+                & (img[:,:,1] < rock_high_thresh[1]) \
+                & (img[:,:,2] < rock_high_thresh[2])
+    in_range = above_low & below_high
+    # Index the array of zeros with the boolean array and set to 1
+    rock[in_range] = 1
+    # Return the binary image
+    return rock
+
 # Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
     # Identify nonzero pixels
