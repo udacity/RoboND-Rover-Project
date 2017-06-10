@@ -43,6 +43,17 @@ def decision_step(Rover):
                 Rover.brake = Rover.brake_hard
                 Rover.steer = 0
                 Rover.mode = 'pickup'
+        elif Rover.mode == 'pickup':
+            if Rover.vel > 0.2:
+                Rover.throttle = 0
+                Rover.brake = Rover.brake_hard
+                Rover.steer = 0
+            # If in a state where want to pickup a rock send pickup command
+            if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
+                Rover.send_pickup = True  
+                Rover.mode = 'forward'
+            elif not Rover.near_sample:
+                Rover.mode = 'forward'
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
             elif len(Rover.nav_angles) < Rover.stop_forward:
                     # Set mode to "stop" and hit the brakes!
