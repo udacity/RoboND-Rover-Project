@@ -54,15 +54,21 @@ def decision_step(Rover):
                 Rover.mode = 'forward'
             elif not Rover.near_sample:
                 Rover.mode = 'forward'
+        elif Rover.mode == 'decelerate':
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
-            elif len(Rover.nav_angles) < Rover.stop_forward:
-                    # Set mode to "stop" and hit the brakes!
-                    Rover.throttle = 0
-                    # Set brake to stored brake value
-                    Rover.brake = Rover.brake_set
-                    Rover.steer = 0
-                    Rover.mode = 'stop'
-
+            if len(Rover.nav_angles) < Rover.stop_forward:
+                # Set mode to "stop" and hit the brakes!
+                Rover.throttle = 0
+                # Set brake to stored brake value
+                Rover.brake = Rover.brake_hard
+                Rover.steer = 0
+                Rover.mode = 'stop'
+            elif len(Rover.nav_angles) >= Rover.go_forward:
+                # Set throttle back to stored value
+                Rover.throttle = Rover.throttle_set
+                # Release the brake
+                Rover.brake = 0
+                Rover.mode = 'forward'
         # If we're already in "stop" mode then make different decisions
         elif Rover.mode == 'stop':
             # If we're in stop mode but still moving keep braking
