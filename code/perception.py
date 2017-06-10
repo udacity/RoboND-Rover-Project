@@ -118,6 +118,13 @@ def perception_step(Rover):
     # TODO: 
     # NOTE: camera image is coming to you in Rover.img
     
+    # filter the rover state
+    roll = Rover.roll
+    pitch = Rover.pitch
+    
+    if roll > 2 and pitch > 0.3:
+        return Rover
+        
     # Get the image
     image = Rover.img
     
