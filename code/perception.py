@@ -119,6 +119,14 @@ def perspect_transform(img, src, dst):
     return warped
 
 
+# Define a function to check the rocks in view
+def check_rocks(Rover):
+    if len(Rover.rock_angles):  # there's rock
+        if np.mean(Rover.rock_dists) < 50:
+            return True
+    return False
+
+
 # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
     # Perform perception steps to update Rover()
