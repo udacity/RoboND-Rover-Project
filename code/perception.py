@@ -87,7 +87,9 @@ def rotate_pix(xpix, ypix, yaw):
     # Return the result  
     return xpix_rotated, ypix_rotated
 
-def translate_pix(xpix_rot, ypix_rot, xpos, ypos, scale): 
+
+# Translate pixels
+def translate_pix(xpix_rot, ypix_rot, xpos, ypos, scale):
     # Apply a scaling and a translation
     xpix_translated = (xpix_rot / scale) + xpos
     ypix_translated = (ypix_rot / scale) + ypos
