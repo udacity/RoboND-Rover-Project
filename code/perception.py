@@ -223,5 +223,11 @@ def perception_step(Rover):
 
     Rover.nav_dists = rover_centric_pixel_distances
     Rover.nav_angles = rover_centric_angles
-    
+
+    # Note down rock pos in view
+    rock_distances, rock_angles = to_polar_coords(rock_xpix, rock_ypix)
+
+    Rover.rock_dists = rock_distances
+    Rover.rock_angles = rock_angles
+
     return Rover
