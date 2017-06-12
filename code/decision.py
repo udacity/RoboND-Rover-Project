@@ -241,6 +241,32 @@ def make_decision(Rover):
                     Rover.brake = 0
                     Rover.steer = 0
                     Rover.mode = 'forward'
+
+
+# Check if the rover is stuck
+def check_stuck(Rover, threshold):
+    # Throttle is on but the rover is not speeding up
+    if Rover.throttle >= 0.1 and Rover.vel < 0.2:  # stuck
+        if Rover.throttle_count > threshold:
+            Rover.throttle_count = 0
+            Rover.is_stuck = True
+            Rover.stuck_time = Rover.total_time
+            Rover.mode = 'unstuck'
+        else:
+            Rover.throttle_count += Rover.throttle_set[1]
+    # Rover is running
+    elif Rover.vel >= 0.2:
+        Rover.is_stuck = False
+        Rover.throttle_count = 0
+    # For the strange situation when throttle cannot be set in forward mode
+    elif Rover.mode == 'forward' and Rover.vel < 0.2:
+        if Rover.forward_count > 1000:
+            Rover.forward_count = 0
+            Rover.is_stuck = True
+            Rover.stuck_time = Rover.total_time
+            Rover.mode = 'unstuck'
+        else:
+            Rover.forward_count += 1
     else:
         Rover.throttle = Rover.throttle_set
         Rover.steer = 0
