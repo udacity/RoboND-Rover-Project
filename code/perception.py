@@ -176,10 +176,17 @@ def perception_step(Rover):
     Rover.vision_image[:, :, 2] = navi_warped * 255
 
     # 5) Convert map image pixel values to rover-centric coords
-    nav_xpix, nav_ypix = rover_coords(navigable)
-    obs_xpix, obs_ypix = rover_coords(obstacles)
-    rock_xpix, rock_ypix = rover_coords(rock)
-    
+    # limit the view of the navi image to get better result
+    row1 = np.int(rover_img.shape[0] - dst_size * 5)
+    row2 = np.int(rover_img.shape[0] - bottom_offset)
+    col1 = np.int(rover_img.shape[1] / 2 - dst_size * 4)
+    col2 = np.int(rover_img.shape[1] / 2 + dst_size * 4)
+
+    front_navi = navi_warped[row1:row2, col1:col2]
+    nav_xpix, nav_ypix = rover_coords(front_navi)
+    obs_xpix, obs_ypix = rover_coords(obstacles_warped)
+    rock_xpix, rock_ypix = rover_coords(rock_warped)
+
     # 6) Convert rover-centric pixel values to world coordinates
     # get current x, y and yaw for the world coords mapping
     xp = Rover.pos[0]
