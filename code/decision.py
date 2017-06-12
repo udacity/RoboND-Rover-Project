@@ -12,33 +12,24 @@ def decision_step(Rover):
     # Example:
     # Check if we have vision data to make decisions with
     if Rover.nav_angles is not None:
-        # Check for Rover.mode status
-        if Rover.mode == 'forward': 
-            # Check the extent of navigable terrain
-            if len(Rover.nav_angles) >= Rover.stop_forward:  
-                # If mode is forward, navigable terrain looks good 
-                # and velocity is below max, then throttle 
-                if Rover.vel < Rover.max_vel:
-                    # keep accelerating
-                    Rover.throttle += Rover.throttle_set
-                else: # Else coast
-                    Rover.throttle = 0
-                Rover.brake = 0
-                # Set steering to average angle clipped to the range +/- 15
-                Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
-            # If there's a lack of navigable terrain pixels then go to 'decelerate' mode
-            elif len(Rover.nav_angles) < Rover.decelerate_forward:
-                # Set mode to "decelerate" and hit the brakes!
-                Rover.throttle = 0
-                # Set brake to stored brake value
-                if Rover.vel > 1:
-                    Rover.brake = Rover.brake_soft
-                else:  # coast
-                    Rover.brake = 0
-                Rover.mode = 'decelerate'  
-            # If in a state where want to pickup a rock send pickup command
-            if Rover.near_sample:
-                # Set mode to "stop" and hit the brakes!
+        # print some info for debugging
+        print("Current mode: ", Rover.mode)
+        print("throttle_count:", Rover.throttle_count)
+
+        make_decision(Rover)
+
+    # Just to make the rover do something
+    # even if no modifications have been made to the code
+    else:
+        Rover.throttle = Rover.throttle_set[0]
+        Rover.steer = 0
+        Rover.brake = 0
+
+    # If in a state where want to pickup a rock send pickup command
+    if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
+        Rover.send_pickup = True
+
+    return Rover
                 Rover.throttle = 0
                 # Set brake to stored brake value
                 Rover.brake = Rover.brake_hard
