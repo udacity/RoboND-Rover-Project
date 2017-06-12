@@ -132,14 +132,6 @@ def perception_step(Rover):
     # Perform perception steps to update Rover()
     # TODO: 
     # NOTE: camera image is coming to you in Rover.img
-    
-    # filter the rover state
-    roll = Rover.roll
-    pitch = Rover.pitch
-    
-    if roll > 2 and pitch > 0.3:
-        return Rover
-        
 
     # Get the image
     rover_img = Rover.img
@@ -205,6 +197,15 @@ def perception_step(Rover):
     # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
     #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
     #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
+    # filter the rover state
+    roll = Rover.roll
+    pitch = Rover.pitch
+
+    if (roll > 359.5 or roll < 0.5) and (pitch < 0.5 or pitch > 359.5):
+        Rover.worldmap[obs_y_world, obs_x_world, 0] += 1
+        Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
+        Rover.worldmap[nav_y_world, nav_x_world, 2] += 1
+
     # 8) Convert rover-centric pixel positions to polar coordinates
     # Update Rover pixel distances and angles
     rover_centric_pixel_distances, rover_centric_angles = to_polar_coords(nav_xpix, nav_ypix)
