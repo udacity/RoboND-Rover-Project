@@ -46,24 +46,29 @@ class RoverState():
         self.pitch = None # Current pitch angle
         self.roll = None # Current roll angle
         self.vel = None # Current velocity
-        self.last_steer = 0  # save last steer when changing steer
+        self.last_steer = 0  # Save last steer when changing steer
         self.steer = 0 # Current steering angle
         self.throttle = 0 # Current throttle value
         self.brake = 0 # Current brake value
         self.nav_angles = None # Angles of navigable terrain pixels
         self.nav_dists = None # Distances of navigable terrain pixels
+        self.rock_angles = None   # Angles of rocks in view
+        self.rock_dists = None # Distance of rocks in view
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
-        self.throttle_set = 0.2 # Throttle setting when accelerating
-        self.brake_soft = 2 # Brake setting when braking soft
+        self.throttle_set = (0.2, 0.3, 0.4) # Throttle setting when accelerating
+        self.throttle_count = 0  # Count when the throttle is set but the rover is not speed up (implying stuck)
+        self.brake_soft = 3 # Brake setting when braking soft
         self.brake_hard = 10 # Brake setting when braking hard
+        self.circle_time = 0 # Count circling time
+        self.is_stuck = False # Raise when the rover is stuck
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
         # get creative in adding new fields or modifying these!
-        self.decelerate_forward = 300 # Threshold to slow down
-        self.stop_forward = 100 # Threshold to initiate stopping
-        self.go_forward = 500 # Threshold to go forward again
+        self.decelerate_forward = 65 # Threshold to slow down
+        self.stop_forward = 50 # Threshold to initiate stopping
+        self.go_forward = 100 # Threshold to go forward again
         self.max_vel = 2.5 # Maximum velocity (meters/second)
         # Image output from perception step
         # Update this image to display your intermediate analysis steps
@@ -79,6 +84,11 @@ class RoverState():
         self.near_sample = 0 # Will be set to telemetry value data["near_sample"]
         self.picking_up = 0 # Will be set to telemetry value data["picking_up"]
         self.send_pickup = False # Set to True to trigger rock pickup
+        self.home = None  # Mark the initial home pos
+        self.is_going_home = False  # Indicating that the rover is going home
+        self.is_done = False  # Indicating that the rover has picked all rocks
+        self.forward_count = 0  # Count when the rover is in forward mode but not moving
+        
 # Initialize our rover 
 Rover = RoverState()
 
