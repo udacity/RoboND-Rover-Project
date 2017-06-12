@@ -298,16 +298,18 @@ def check_circle(Rover):
         else:
             Rover.circle_time += 0.2
 
-    else:
-        Rover.throttle = Rover.throttle_set
-        Rover.steer = 0
+
+# Maintain a certain speed
+def rover_maintain_speed(Rover, min, max):
+    if Rover.vel > max:
+        Rover.throttle = 0
+        Rover.brake = Rover.brake_soft
+    elif Rover.vel < min:
+        Rover.throttle = Rover.throttle_set[1]
         Rover.brake = 0
-        
-    # If in a state where want to pickup a rock send pickup command
-    if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
-        Rover.send_pickup = True
-    
-    return Rover
+    else:
+        Rover.throttle = 0
+        Rover.brake = 0
 
 # Get next steer
 def get_navi_steer(Rover):
