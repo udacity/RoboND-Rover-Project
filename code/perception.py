@@ -135,8 +135,15 @@ def perception_step(Rover):
 
     # Get the image
     rover_img = Rover.img
-    
-    # 1) Define source and destination points for perspective transform
+
+    # 1) Apply color threshold to identify navigable terrain/obstacles/rock samples
+    navigable = color_thresh(rover_img)
+    obstacles = get_obstacles_1(rover_img)
+    rock_thresh_low = (160, 160, 0)
+    rock_thresh_high = (255, 255, 140)
+    rock = get_rock(rover_img, rock_thresh_low, rock_thresh_high)
+
+    # 2) Define source and destination points for perspective transform
     # These source and destination points are defined to warp the image
     # to a grid where each 10x10 pixel square represents 1 square meter
 
@@ -148,20 +155,17 @@ def perception_step(Rover):
     # is not the position of the rover but a bit in front of it
     # this is just a rough guess, feel free to change it!
     bottom_offset = 6
-    
-    # 2) Apply perspective transform
-    # 3) Apply color threshold to identify navigable terrain/obstacles/rock samples
-    navigable = color_thresh(warped)
-    obstacles = get_obstacles_1(warped)
-    rock_thresh_low = (160, 160, 0)
-    rock_thresh_high = (255, 255, 140)
-    rock = get_rock(warped, rock_thresh_low, rock_thresh_high)
-    
+
+    # 3) Apply perspective transform
     destination = np.float32([[rover_img.shape[1] / 2 - dst_size, rover_img.shape[0] - bottom_offset],
                               [rover_img.shape[1] / 2 + dst_size, rover_img.shape[0] - bottom_offset],
                               [rover_img.shape[1] / 2 + dst_size, rover_img.shape[0] - 2 * dst_size - bottom_offset],
                               [rover_img.shape[1] / 2 - dst_size, rover_img.shape[0] - 2 * dst_size - bottom_offset],
                               ])
+    navi_warped = perspect_transform(navigable, source, destination)
+    obstacles_warped = perspect_transform(obstacles, source, destination)
+    rock_warped = perspect_transform(rock, source, destination)
+
     # 4) Update Rover.vision_image (this will be displayed on left side of screen)
     # Example: Rover.vision_image[:,:,0] = obstacle color-thresholded binary image
     #          Rover.vision_image[:,:,1] = rock_sample color-thresholded binary image
