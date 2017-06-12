@@ -1,4 +1,5 @@
 import numpy as np
+from perception import check_rocks, to_polar_coords, pix_to_world
 
 
 # This is where you can build a decision tree for determining throttle, brake and steer
