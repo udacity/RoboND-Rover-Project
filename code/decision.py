@@ -37,6 +37,8 @@ def decision_step(Rover):
                 Rover.mode = 'pickup'
         elif Rover.mode == 'pickup':
             if Rover.vel > 0.2:
+            # Get new steer value
+            new_steer = get_navi_steer(Rover)
                 Rover.throttle = 0
                 Rover.brake = Rover.brake_hard
                 Rover.steer = 0
@@ -103,3 +105,27 @@ def decision_step(Rover):
     
     return Rover
 
+# Get next steer
+def get_navi_steer(Rover):
+    if Rover.is_going_home:
+        # get home pos
+        home = Rover.home
+        # get current rover pos
+        pos = Rover.pos
+        # convert them into world coords
+        home_world_x, home_world_y = pix_to_world(home[0], home[1], pos[0], pos[1], Rover.yaw, Rover.worldmap.shape[0],
+                                                  10)
+        home_world_dist, home_world_angle = to_polar_coords(home_world_x, home_world_y)
+
+        mean_angle = np.mean(Rover.nav_angles)
+
+        # Steer toward home
+        if mean_angle > home_world_angle:
+            steer = -10
+        else:
+            steer = +10
+    else:
+        # Set steering to average angle clipped to the range +/- 15
+        steer = np.mean(Rover.nav_angles * 180 / np.pi) + 14.9  # lean towards left side wall
+
+    return np.clip(steer, -15, 15)
