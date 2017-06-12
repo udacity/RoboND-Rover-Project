@@ -267,6 +267,37 @@ def check_stuck(Rover, threshold):
             Rover.mode = 'unstuck'
         else:
             Rover.forward_count += 1
+
+
+# Check if the rover is making circle
+def check_circle(Rover):
+    if Rover.steer == 15 and Rover.vel > 0.5:
+        # circling
+        if Rover.circle_time > 50:
+            Rover.circle_time = 0
+            Rover.is_stuck = True
+            Rover.stuck_time = Rover.total_time
+            Rover.mode = 'unstuck'
+        elif Rover.steer != 15:
+            Rover.circle_time = 0
+            Rover.is_stuck = False
+            Rover.stuck_time = 0
+        else:
+            Rover.circle_time += 0.2
+    elif Rover.steer == -15 and Rover.vel > 0.5:
+        # circling
+        if Rover.circle_time > 50:
+            Rover.circle_time = 0
+            Rover.is_stuck = True
+            Rover.stuck_time = Rover.total_time
+            Rover.mode = 'unstuck'
+        elif Rover.steer != -15:
+            Rover.circle_time = 0
+            Rover.is_stuck = False
+            Rover.stuck_time = 0
+        else:
+            Rover.circle_time += 0.2
+
     else:
         Rover.throttle = Rover.throttle_set
         Rover.steer = 0
