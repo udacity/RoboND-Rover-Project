@@ -311,6 +311,19 @@ def rover_maintain_speed(Rover, min, max):
         Rover.throttle = 0
         Rover.brake = 0
 
+
+# Set throttle for rover
+def set_rover_throttle(Rover):
+    if len(Rover.nav_angles) >= Rover.go_forward * 3:
+        Rover.throttle += Rover.throttle_set[2]
+    elif len(Rover.nav_angles) >= Rover.go_forward * 2:
+        Rover.throttle += Rover.throttle_set[1]
+    elif len(Rover.nav_angles) > Rover.go_forward:
+        Rover.throttle += Rover.throttle_set[0]
+    else:
+        Rover.throttle = 0
+
+
 # Get next steer
 def get_navi_steer(Rover):
     if Rover.is_going_home:
