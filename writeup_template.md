@@ -38,7 +38,12 @@ You're reading it!
 
 ### Notebook Analysis
 #### 1. Run the functions provided in the notebook on test images (first with the test data provided, next on data you have recorded). Add/modify functions to allow for color selection of obstacles and rock samples.
-Here is an example of how to include an image in your writeup.
+
+I added three functions detect_navi , detect_rock, detect_obstacle to identify the navigable roads,rock and obstacle respectly.
+
+Inside the three function , I use color_thresh function to filter the colors through changing the parameter rgb_thresh.
+
+I printed out the red, green and blue color channels for obseravation and found the road color can be affected by all three color channels ,so I fine tune all three channels to filter the road. The rock is affcted through red and green channels , so for rock I mainly manipulated these two channels and set blue channel to 0.  After that , I got the obstacle by subtracting the colors of the navigable and rock .(I first got a color channel and set all value to 1, and then set the navigable road and rock area to be 0).
 
 ![alt text][image1]
 
