@@ -1,4 +1,5 @@
 # Do the necessary imports
+
 import argparse
 import shutil
 import base64
@@ -26,6 +27,7 @@ from supporting_functions import update_rover, create_output_images
 sio = socketio.Server()
 app = Flask(__name__)
 
+
 # Read in ground truth map and create 3-channel green version for overplotting
 # NOTE: images are read in by default with the origin (0, 0) in the upper left
 # and y-axis increasing downward.
@@ -45,23 +47,33 @@ class RoverState():
         self.yaw = None # Current yaw angle
         self.pitch = None # Current pitch angle
         self.roll = None # Current roll angle
-        self.vel = None # Current velocity
+        self.vel = 0 # Current velocity
         self.steer = 0 # Current steering angle
         self.throttle = 0 # Current throttle value
         self.brake = 0 # Current brake value
-        self.nav_angles = None # Angles of navigable terrain pixels
-        self.nav_dists = None # Distances of navigable terrain pixels
+        self.nav_angles = 0 # Angles of navigable terrain pixels
+        self.nav_dists = 20 # Distances of navigable terrain pixels
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
         self.throttle_set = 0.2 # Throttle setting when accelerating
         self.brake_set = 10 # Brake setting when braking
+        self.rock_angles = None
+        self.rock_dists = None
+        self.stuck_flag = 0
+
+
+        
+
+        self.time15 = 0
+        self.timeminus15 = 0
+        self.origin = None 
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
         # get creative in adding new fields or modifying these!
-        self.stop_forward = 50 # Threshold to initiate stopping
-        self.go_forward = 500 # Threshold to go forward again
-        self.max_vel = 2 # Maximum velocity (meters/second)
+        self.stop_forward = 500 # Threshold to initiate stopping
+        self.go_forward = 800 # Threshold to go forward again
+        self.max_vel = 5 # Maximum velocity (meters/second)
         # Image output from perception step
         # Update this image to display your intermediate analysis steps
         # on screen in autonomous mode
@@ -79,14 +91,17 @@ class RoverState():
 # Initialize our rover 
 Rover = RoverState()
 
+Rover.origin = Rover.pos # store origin position
+
+
 # Variables to track frames per second (FPS)
 # Intitialize frame counter
 frame_counter = 0
 # Initalize second counter
 second_counter = time.time()
 fps = None
-
-
+flag = 0
+t = time.time()
 # Define telemetry function for what to do with incoming data
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -98,12 +113,19 @@ def telemetry(sid, data):
         fps = frame_counter
         frame_counter = 0
         second_counter = time.time()
-    print("Current FPS: {}".format(fps))
+
+    if int((time.time() - t)) % 10 == 0:
+         print("Current FPS: {}".format(fps))
 
     if data:
-        global Rover
+        global Rover, flag 
         # Initialize / update Rover with current telemetry
         Rover, image = update_rover(Rover, data)
+        if flag== 0:
+
+            Rover.origin = Rover.pos # store origin position
+            flag  = 1
+
 
         if np.isfinite(Rover.vel):
 
@@ -198,7 +220,7 @@ if __name__ == '__main__':
         print("NOT recording this run ...")
     
     # wrap Flask application with socketio's middleware
-    app = socketio.Middleware(sio, app)
+    app = socketio.Middleware(sio, app) # add debug = True by zhenyu
 
     # deploy as an eventlet WSGI server
     eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
