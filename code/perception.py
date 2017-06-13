@@ -3,9 +3,9 @@ import cv2
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt 
 
-path = "img1/robocam_2017_06_12_20_10_01_537.jpg"
+#path = "img1/robocam_2017_06_12_20_10_01_537.jpg"
 
-test_img = mpimg.imread(path)
+#test_img = mpimg.imread(path)
 
 
 # Identify pixels above the threshold
