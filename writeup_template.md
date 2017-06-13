@@ -48,7 +48,12 @@ I printed out the red, green and blue color channels for obseravation and found 
 ![alt text][image1]
 
 #### 1. Populate the `process_image()` function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap.  Run `process_image()` on your test data using the `moviepy` functions provided to create video output of your result. 
-And another! 
+
+Following are my steps to transfer navigable roads, obstacles and rock into a world map.
+
+1. Get a 2 dimension perspective .  Measure 4 coners in a square grid then use perspectative to get a perspectie transform.
+2. Get the 2 dimension perspective of rock , navigable road and obstacles.
+
 
 ![alt text][image2]
 ### Autonomous Navigation and Mapping
