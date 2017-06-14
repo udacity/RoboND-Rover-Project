@@ -6,9 +6,6 @@ from perception import to_polar_coords
 
 # change to Rover cord
 
-def to_rover_cord(current_rover,starting):
-
-    return starting[0]-current_rover[0], starting[1] - current_rover[1]
 
 # This is where you can build a decision tree for determining throttle, brake and steer 
 # commands based on the output of the perception_step() function
@@ -22,8 +19,7 @@ def decision_step(Rover):
     #print("Rover Len nav_angles: " + str(len(Rover.nav_angles)))
 
     is_stuck = Rover.stuck_flag > 40
-    is_stuck2 = Rover.stuck_flag > 60
-    colleted = Rover.samples_found >= 1
+    #colleted = Rover.samples_found >= 1
 
     # Implement conditionals to decide what to do given perception data
     # Here you're all set up with some basic functionality but you'll need to
@@ -148,8 +144,8 @@ def decision_step(Rover):
             elif  Rover.rock_angles.any(): # if it has not be near the sample but stop ,need to continue forward
 
                     Rover.brake = 0
-                    Rover.steer +=  -10
-                    Rover.throttle = 0.2
+                    Rover.steer +=  -Rover.steer*2
+                    Rover.throttle = -0.4
 
                     Rover.mode ='forward'
 
@@ -166,8 +162,6 @@ def decision_step(Rover):
 
                     if is_stuck :
                         Rover.brake = 0
-
-
                         Rover.steer = 15# randomly choose direction
                         print("im stuck in stop mode")
                         #Rover.mode = 'forward'

@@ -137,14 +137,6 @@ def get_5_meter_pixels(xpix,ypix):
 
     return xpix[a],ypix[a]
 
-def get_7_meter_pixels(xpix,ypix):
-
-    a = (xpix * xpix + ypix * ypix) < 4900
-
-    return xpix[a],ypix[a]
-
-
-
 
 # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
