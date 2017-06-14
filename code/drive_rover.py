@@ -88,7 +88,7 @@ class RoverState():
         self.is_going_home = False  # Indicating that the rover is going home
         self.is_done = False  # Indicating that the rover has picked all rocks
         self.forward_count = 0  # Count when the rover is in forward mode but not moving
-
+        self.last_mode = None  # save last rover mode
 # Initialize our rover 
 Rover = RoverState()
 

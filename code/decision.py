@@ -153,7 +153,7 @@ def make_decision(Rover):
                 Rover.throttle_count += Rover.throttle_set[1]
         elif Rover.vel >= 0.2:
             # this direction is movable
-            Rover.mode = 'forward'
+            Rover.mode = Rover.last_mode
 
     # Got rock in sight, approach it
     elif Rover.mode == 'approach':
@@ -251,6 +251,7 @@ def check_stuck(Rover, threshold):
             Rover.throttle_count = 0
             Rover.is_stuck = True
             Rover.stuck_time = Rover.total_time
+            Rover.last_mode = Rover.mode  # save rover mode to get back to
             Rover.mode = 'unstuck'
         else:
             Rover.throttle_count += Rover.throttle_set[1]
@@ -264,6 +265,7 @@ def check_stuck(Rover, threshold):
             Rover.forward_count = 0
             Rover.is_stuck = True
             Rover.stuck_time = Rover.total_time
+            Rover.last_mode = Rover.mode  # save rover mode to get back to
             Rover.mode = 'unstuck'
         else:
             Rover.forward_count += 1
@@ -277,6 +279,7 @@ def check_circle(Rover):
             Rover.circle_time = 0
             Rover.is_stuck = True
             Rover.stuck_time = Rover.total_time
+            Rover.last_mode = Rover.mode  # save rover mode to get back to
             Rover.mode = 'unstuck'
         elif Rover.steer != 15:
             Rover.circle_time = 0
@@ -290,6 +293,7 @@ def check_circle(Rover):
             Rover.circle_time = 0
             Rover.is_stuck = True
             Rover.stuck_time = Rover.total_time
+            Rover.last_mode = Rover.mode  # save rover mode to get back to
             Rover.mode = 'unstuck'
         elif Rover.steer != -15:
             Rover.circle_time = 0
