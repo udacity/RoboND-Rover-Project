@@ -1,8 +1,7 @@
 ## Project: Search and Sample Return
-### Writeup Template: You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+### Objectives: In this work the objective is to make a rover move autonomously in order to map the environment and look for yellow rocks.
 
 ---
-
 
 **The goals / steps of this project are the following:**  
 
