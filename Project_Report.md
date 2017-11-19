@@ -24,8 +24,8 @@ Steps followed:
 
 [//]: # (Image References)
 
-[image1]: ./misc/rover_image.jpg
-[image2]: ./calibration_images/example_grid1.jpg
+[image1]: ./output/terrain2direction.png
+[image2]: ./output/terrain2drivablemap.png
 [image3]: ./calibration_images/example_rock1.jpg 
 
 ---
@@ -34,6 +34,7 @@ Submissions:
 
 
 ### Notebook Analysis
+
 #### 1. Run the functions provided in the notebook on test images (first with the test data provided, next on data you have recorded). Add/modify functions to allow for color selection of obstacles and rock samples.
 Here is an example of how to include an image in your writeup.
 
