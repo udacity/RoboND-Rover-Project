@@ -18,18 +18,15 @@ Steps followed:
 
 **Autonomous Navigation / Mapping**
 
-* Fill in the `perception_step()` function within the `perception.py` script with the appropriate image processing functions to create a map and update `Rover()` data (similar to what you did with `process_image()` in the notebook). 
-* Fill in the `decision_step()` function within the `decision.py` script with conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands. 
-* Iterate on your perception and decision function until your rover does a reasonable (need to define metric) job of navigating and mapping.  
+* `perception_step()` function within the `perception.py` has image processing functions to create a map and update `Rover()` object
+* `decision_step()` function within the `decision.py` has conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands to Rover object. 
+* drive_rover.py Iterates on perception and decision functions until rover does a reasonable job of navigating and mapping.  
 
 [//]: # (Image References)
 
 [image1]: ./misc/rover_image.jpg
 [image2]: ./calibration_images/example_grid1.jpg
 [image3]: ./calibration_images/example_rock1.jpg 
-
-## [Rubric](https://review.udacity.com/#!/rubrics/916/view) Points
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
 
@@ -43,9 +40,11 @@ Here is an example of how to include an image in your writeup.
 ![alt text][image1]
 
 #### 1. Populate the `process_image()` function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap.  Run `process_image()` on your test data using the `moviepy` functions provided to create video output of your result. 
+
 And another! 
 
 ![alt text][image2]
+
 ### Autonomous Navigation and Mapping
 
 #### 1. Fill in the `perception_step()` (at the bottom of the `perception.py` script) and `decision_step()` (in `decision.py`) functions in the autonomous mapping scripts and an explanation is provided in the writeup of how and why these functions were modified as they were.
