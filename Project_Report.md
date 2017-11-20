@@ -2,16 +2,18 @@
 
 Source code https://github.com/boldbinarywisdom/RoboND-Rover-Project
 
+The purpose of this project is to write code to drive rover autonomoulsy in a map that is simulated environment with objects of interests and terrain where rover cannot drive. arned about in the lesson, and build upon them.
+
+
+
 ## Image References
 
-image1 ./output/terrain2direction.jpg
-image2 ./output/terrain2drivablemap.jpg
-image3 ./calibration_images/example_rock1.jpg
-image4 ./output/foundRock.jpg
+#1. image1 ./output/terrain2direction.jpg
+#2. image2 ./output/terrain2drivablemap.jpg
+#3. image3 ./calibration_images/example_rock1.jpg
+#4. image4 ./output/foundRock.jpg
 
 
-
-The purpose of this project is to write code to drive rover autonomoulsy in a map that is simulated environment with objects of interests and terrain where rover cannot drive. arned about in the lesson, and build upon them.
 
 
 ---
