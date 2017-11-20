@@ -30,6 +30,7 @@ Steps followed:
 [image1]: ./output/terrain2direction.jpg
 [image2]: ./output/terrain2drivablemap.jpg
 [image3]: ./calibration_images/example_rock1.jpg 
+[image4]: ./output/foundRock.jpg
 
 ---
 
@@ -106,6 +107,6 @@ The robot navigation is controlled by below parameters
 Launching autonomous mode with vision processing improves Rovers navigation greatly. When world map is displayed, the red areas indicates obstacle region. The Robotics motion can be further tuned by parameters listed above. 
 
 
-![alt text][image3]
+![And Found a Rock][image4]
 
 
