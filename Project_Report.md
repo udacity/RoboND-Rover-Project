@@ -24,8 +24,8 @@ Steps followed:
 
 [//]: # (Image References)
 
-[image1]: ./output/terrain2direction.png
-[image2]: ./output/terrain2drivablemap.png
+[image1]: ./output/terrain2direction.jpg
+[image2]: ./output/terrain2drivablemap.jpg
 [image3]: ./calibration_images/example_rock1.jpg 
 
 ---
