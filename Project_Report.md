@@ -4,10 +4,10 @@ Source code https://github.com/boldbinarywisdom/RoboND-Rover-Project
 
 ## Image References
 
-[image1]: ./output/terrain2direction.jpg
-[image2]: ./output/terrain2drivablemap.jpg
-[image3]: ./calibration_images/example_rock1.jpg 
-[image4]: ./output/foundRock.jpg
+image1 ./output/terrain2direction.jpg
+image2 ./output/terrain2drivablemap.jpg
+image3 ./calibration_images/example_rock1.jpg 
+image4 ./output/foundRock.jpg
 
 
 
