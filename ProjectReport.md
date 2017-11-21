@@ -20,6 +20,7 @@ The purpose of this project is to write code to drive rover autonomoulsy in a ma
 * `perception_step()` function within the `perception.py` has image processing functions to create a map and update `Rover()` object
 * `decision_step()` function within the `decision.py` has conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands to Rover object. 
 * drive_rover.py Iterates on perception and decision functions until rover does a reasonable job of navigating and mapping.  
+# More detailed steps can be found under Readme.md
 
 [//]: # (Image References)
 
@@ -52,11 +53,26 @@ And another!
 The telemetry() function in driver_rover.py receives images and calls two key functions:
 
 1. perception_step() which applies vision steps, finds navigation angle and updates Rover state
+
+Perception steps and modified code is detailed below and summary of steps added to the function are as follows:
+
+1. Applying persptive transform 
+2. Applying color threshold
+3. Converting rto over centric coordinates and updating to world map
+4.   obstacles are added to world map channel red which can be seen in image2
+5.   Rocks are added to the green channel in the world map
+6.   Navigable terrain is added to the blue channel of the world map
+7. A mosaic is created with various images. Original image, warped image, transformed image and navigable map
+8. Rover pixels are coverted to angles which are stored in Rover objects for subsequent steps used in actually driving the rover
+9. Finding rocks
+10.   Rocks are brigher than the surrounding hence a RGB filter is applied to isolate the area in the map
+11. This location of the map upon doing perspective transform gives the location in the terrain
+
 2. decision_step() which decided to steer, throttle or brake
 
 #### No modifications added to drive_rover.py
 
-Steps in perception_step() function
+Updated code in perception_step() function
 
     # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
