@@ -172,6 +172,6 @@ Launching autonomous mode with vision processing improves Rovers navigation grea
 
 ![And Found a Rock][image4]
 
-### Closing remarks
+### Summary
 
-The Robot mapped over 75% of the terrain.
+The Robot mapped over 75% of the terrain when image4 was captured.
