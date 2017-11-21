@@ -20,7 +20,7 @@ The purpose of this project is to write code to drive rover autonomoulsy in a ma
 * `perception_step()` function within the `perception.py` has image processing functions to create a map and update `Rover()` object
 * `decision_step()` function within the `decision.py` has conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands to Rover object. 
 * drive_rover.py Iterates on perception and decision functions until rover does a reasonable job of navigating and mapping.  
-# More detailed steps can be found under Readme.md
+### More detailed steps can be found under Readme.md
 
 [//]: # (Image References)
 
@@ -158,7 +158,6 @@ def perception_step(Rover):
     return Rover
 
 
-#### The perception_step function was modified to perform vision processing on the images
 
 #### The robot navigation is controlled by below parameters
 
