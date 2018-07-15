@@ -171,3 +171,4 @@ def perception_step(Rover):
         Rover.sees_sample = False
         Rover.vision_image[:, :, 1] = 0
     return Rover
+
