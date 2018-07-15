@@ -2,11 +2,8 @@ import numpy as np
 import cv2
 from PIL import Image
 from io import BytesIO, StringIO
-from termcolor import colored
 import base64
 import time
-import sys
-
 
 # Define a function to convert telemetry strings to float independent of decimal convention
 def convert_to_float(string_to_convert):
@@ -25,16 +22,13 @@ def update_rover(Rover, data):
             samples_ypos = np.int_([convert_to_float(pos.strip()) for pos in data["samples_y"].split(';')])
             Rover.samples_pos = (samples_xpos, samples_ypos)
             Rover.samples_to_find = np.int(data["sample_count"])
-            Rover.home_pos = np.array([convert_to_float(pos.strip()) for pos in data["position"].split(';')])
-            Rover.last_pos = Rover.home_pos
-            Rover.last_steers = np.array(convert_to_float(data["steering_angle"]))
       # Or just update elapsed time
       else:
             tot_time = time.time() - Rover.start_time
             if np.isfinite(tot_time):
                   Rover.total_time = tot_time
       # Print out the fields in the telemetry data dictionary
-      # print(data.keys())
+      print(data.keys())
       # The current speed of the rover in m/s
       Rover.vel = convert_to_float(data["speed"])
       # The current position of the rover
@@ -55,16 +49,12 @@ def update_rover(Rover, data):
       Rover.picking_up = np.int(data["picking_up"])
       # Update number of rocks collected
       Rover.samples_collected = Rover.samples_to_find - np.int(data["sample_count"])
-      # Update last Rover positions (only keep track of last 500)
-      Rover.last_pos = np.vstack([Rover.pos, Rover.last_pos])[:500]
-      # Update last Rover steers (only keep track of last 1000)
-      Rover.last_steers = np.insert(Rover.last_steers, 0, Rover.steer)[:1000]
 
-      # print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
-      # Rover.throttle, 'steer_angle =', Rover.steer, 'near_sample:', Rover.near_sample, 
-      # 'picking_up:', data["picking_up"], 'sending pickup:', Rover.send_pickup, 
-      # 'total time:', Rover.total_time, 'samples remaining:', data["sample_count"], 
-      # 'samples collected:', Rover.samples_collected)
+      print('speed =',Rover.vel, 'position =', Rover.pos, 'throttle =', 
+      Rover.throttle, 'steer_angle =', Rover.steer, 'near_sample:', Rover.near_sample, 
+      'picking_up:', data["picking_up"], 'sending pickup:', Rover.send_pickup, 
+      'total time:', Rover.total_time, 'samples remaining:', data["sample_count"], 
+      'samples collected:', Rover.samples_collected)
       # Get the current image from the center camera of the rover
       imgString = data["image"]
       image = Image.open(BytesIO(base64.b64decode(imgString)))
@@ -75,6 +65,7 @@ def update_rover(Rover, data):
 
 # Define a function to create display output given worldmap results
 def create_output_images(Rover):
+
       # Create a scaled map for plotting and clean up obs/nav pixels a bit
       if np.max(Rover.worldmap[:,:,2]) > 0:
             nav_pix = Rover.worldmap[:,:,2] > 0
@@ -161,3 +152,6 @@ def create_output_images(Rover):
       encoded_string2 = base64.b64encode(buff.getvalue()).decode("utf-8")
 
       return encoded_string1, encoded_string2
+
+
+

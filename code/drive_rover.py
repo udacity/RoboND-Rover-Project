@@ -1,3 +1,4 @@
+# Do the necessary imports
 import argparse
 import shutil
 import base64
@@ -15,12 +16,11 @@ import json
 import pickle
 import matplotlib.image as mpimg
 import time
-import sys
 
+# Import functions for perception and decision making
 from perception import perception_step
 from decision import decision_step
 from supporting_functions import update_rover, create_output_images
-
 # Initialize socketio server and Flask application 
 # (learn more at: https://python-socketio.readthedocs.io/en/latest/)
 sio = socketio.Server()
@@ -38,7 +38,6 @@ ground_truth_3d = np.dstack((ground_truth*0, ground_truth*255, ground_truth*0)).
 # Define RoverState() class to retain rover state parameters
 class RoverState():
     def __init__(self):
-        # Default Rover State Parameters
         self.start_time = None # To record the start time of navigation
         self.total_time = None # To record total duration of naviagation
         self.img = None # Current camera image
@@ -78,33 +77,6 @@ class RoverState():
         self.near_sample = 0 # Will be set to telemetry value data["near_sample"]
         self.picking_up = 0 # Will be set to telemetry value data["picking_up"]
         self.send_pickup = False # Set to True to trigger rock pickup
-        # Custom Rover State Parameters
-        self.home_pos  = None
-        self.pitch_tolerance = 90
-        self.roll_tolerance = 90
-        self.last_pos = None
-        self.last_steers = None
-        self.is_stuck = False
-        self.free_rover_start_time = None
-        self.free_rover_end_time = None
-        self.is_in_perpetual_loop = False
-        self.stop_perpetual_loop_start_time = None
-        self.stop_perpetual_loop_end_time = None
-        self.is_angling_towards_sample = None
-        self.is_approaching_sample = None
-        self.angling_towards_sample_start_time = None
-        self.approaching_sample_end_time = None
-        self.sees_sample = False
-        self.distance_to_nearest_sample = None
-        self.samples_collected_pos = np.array([])
-        self.nearest_sample_pos = np.array([])
-        self.nearest_sample_pos_in_rover_coords = np.array([])
-        self.last_nearest_sample_pos_in_rover_coords = np.array([])
-        self.latest_completed_sample_collection_time = None
-        self.was_picking_up = False
-        self.arrived_home = False
-        self.arrival_time = None
-    
 # Initialize our rover 
 Rover = RoverState()
 
@@ -121,13 +93,13 @@ fps = None
 def telemetry(sid, data):
 
     global frame_counter, second_counter, fps
-    frame_counter += 1
+    frame_counter+=1
     # Do a rough calculation of frames per second (FPS)
     if (time.time() - second_counter) > 1:
         fps = frame_counter
         frame_counter = 0
         second_counter = time.time()
-    # print("Current FPS: {}".format(fps))
+    print("Current FPS: {}".format(fps))
 
     if data:
         global Rover
@@ -178,7 +150,7 @@ def telemetry(sid, data):
 
 @sio.on('connect')
 def connect(sid, environ):
-    print("connect ", sid) 
+    print("connect ", sid)
     send_control((0, 0, 0), '', '')
     sample_data = {}
     sio.emit(
