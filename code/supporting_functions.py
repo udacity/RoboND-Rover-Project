@@ -80,6 +80,7 @@ def create_output_images(Rover):
 
       likely_nav = navigable >= obstacle
       obstacle[likely_nav] = 0
+      navigable[~likely_nav] = 0
       plotmap = np.zeros_like(Rover.worldmap)
       plotmap[:, :, 0] = obstacle
       plotmap[:, :, 2] = navigable
